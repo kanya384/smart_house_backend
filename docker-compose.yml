@@ -1,0 +1,18 @@
+version: '3'
+networks:
+  app-net:
+    driver: bridge
+services:
+  pgdb:
+    image: 'postgres:11'
+    container_name: 'pgdb'
+    environment:
+      POSTGRES_USER: ${APP_POSTGRES_USERNAME}
+      POSTGRES_PASSWORD: ${APP_POSTGRES_PASS}
+      POSTGRES_DB: ${APP_POSTGRES_DB_NAME}
+    networks:
+      - app-net
+    ports:
+      - 5432:5432
+    volumes:
+      - ./db/data:/var/lib/postgresql/data
