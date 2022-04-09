@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/url"
 
+	"github.com/google/uuid"
 	"github.com/jackc/pgtype"
 	"github.com/jackc/pgx/v4/pgxpool"
 )
@@ -58,4 +59,8 @@ func ConvertBoolToBit(boolValue bool) string {
 func ConvertBitToBool(bit pgtype.Bit) bool {
 	bitVal, _ := bit.Value()
 	return bitVal == "1"
+}
+
+func CreateID() string {
+	return uuid.New().String()
 }

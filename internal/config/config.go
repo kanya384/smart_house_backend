@@ -13,7 +13,6 @@ type Config struct {
 	TokenTTL                time.Duration
 	RefreshTokenTTL         time.Duration
 	TokenSecret             string
-	RedisURL                string
 	PostgresHost            string
 	PostgresPort            string
 	PostgresUsername        string

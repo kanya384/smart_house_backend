@@ -2,39 +2,42 @@
 -- +goose StatementBegin
 
 CREATE TABLE IF NOT EXISTS Users (
-    id      bigserial primary key,
+    id      text primary key,
     name    text not null default '',
     surname text not null default ''
 );
 
 CREATE TABLE IF NOT EXISTS Houses (
-    id          bigserial primary key,
-    name        text not null default '',
-    owner       int not null,
-    allowance   int[]
+    id          text primary key,
+    name        text not null,
+    owner_id    text not null,
+    allowance   text[],
+    CONSTRAINT houses_Constraint
+        FOREIGN KEY (owner_id) REFERENCES Users (id)
+        ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS House_parts (
-    id          bigserial primary key,
-    name        text not null default '',
-    house_id    int not null default 0,
+    id          text primary key,
+    name        text not null,
+    house_id    text not null,
     CONSTRAINT house_part_Constraint
         FOREIGN KEY (house_id) REFERENCES Houses (id)
         ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS Controller_types (
-    id                     bigserial primary key,
-    name                   text not null default '',
-    photo                  text not null default '',
-    digital_pin_cnt        int not null default 0,
-    analog_pin_cnt         int not null default 0
+    id                     text primary key,
+    name                   text not null,
+    photo                  text not null,
+    digital_pin_cnt        int not null,
+    analog_pin_cnt         int not null
 );
 
 CREATE TABLE IF NOT EXISTS Controllers (
-    id                     bigserial primary key,
-    controller_type_id     int not null default 0,
-    ip                     text not null default '',
+    id                     text primary key,
+    controller_type_id     text not null,
+    ip                     text not null,
     CONSTRAINT controllers_Constraint
         FOREIGN KEY (controller_type_id) REFERENCES Controller_types (id)
         ON DELETE CASCADE ON UPDATE CASCADE
@@ -42,25 +45,25 @@ CREATE TABLE IF NOT EXISTS Controllers (
 
 
 CREATE TABLE IF NOT EXISTS Device_types (
-    id          bigserial primary key,
-    name        text not null default ''
+    id          text primary key,
+    name        text not null
 );
 
 
 CREATE TABLE IF NOT EXISTS Devices (
-    id                 bigserial primary key,
-    device_type_id     int not null default 0,
+    id                 text primary key,
+    device_type_id     text not null,
     CONSTRAINT devices_Constraint
         FOREIGN KEY (device_type_id) REFERENCES Device_types (id)
         ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS Pins (
-    id              bigserial primary key,
-    controller_id   int not null,
-    device_id       int not null,
+    id              text primary key,
+    controller_id   text not null,
+    device_id       text not null,
     value           int not null,
-    CONSTRAINT analog_pin_constraint
+    CONSTRAINT pins_constraint
         FOREIGN KEY (controller_id) REFERENCES Controllers (id)
         ON DELETE CASCADE ON UPDATE CASCADE
 );
