@@ -70,7 +70,6 @@ CREATE TABLE IF NOT EXISTS Pins (
 -- +goose Down
 -- +goose StatementBegin
 DROP TABLE IF EXISTS Pins;
-
 DROP TABLE IF EXISTS Controllers;
 DROP TABLE IF EXISTS Controller_types;
 DROP TABLE IF EXISTS Devices;

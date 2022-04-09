@@ -10,8 +10,8 @@ run:
 update:
 	@go run cmd/command/main.go
 migrate-up:
-	@goose -dir=./migrations up
+	@goose -dir=./internal/migrations up
 migrate-down:
-	@goose -dir=./migrations down
+	@goose -dir=./internal/migrations down
 proto-gen:
 	@protoc --go_out=internal api/grpc/api.proto --go-grpc_opt=require_unimplemented_servers=false --go-grpc_out=internal
