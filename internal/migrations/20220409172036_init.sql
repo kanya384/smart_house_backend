@@ -63,6 +63,7 @@ CREATE TABLE IF NOT EXISTS Pins (
     controller_id   text not null,
     device_id       text not null,
     value           int not null,
+    type            int not null,
     CONSTRAINT pins_constraint
         FOREIGN KEY (controller_id) REFERENCES Controllers (id)
         ON DELETE CASCADE ON UPDATE CASCADE

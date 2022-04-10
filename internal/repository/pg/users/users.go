@@ -5,29 +5,23 @@ import (
 	"errors"
 	"fmt"
 	"smart_house_backend/internal/domain"
+	repo "smart_house_backend/internal/repository"
 
 	"github.com/jackc/pgx/v4/pgxpool"
 )
-
-type Repository interface {
-	GetUser(ctx context.Context, id string) (user domain.User, err error)
-	CreateUser(ctx context.Context, user domain.User) (id string, err error)
-	UpdateUser(ctx context.Context, user domain.User) (err error)
-	DeleteUser(ctx context.Context, id string) (err error)
-}
 
 type repository struct {
 	Db *pgxpool.Pool
 }
 
-func NewRepository(Db *pgxpool.Pool) Repository {
+func NewRepository(Db *pgxpool.Pool) repo.UsersRepository {
 	return &repository{
 		Db: Db,
 	}
 }
 
-func (r *repository) GetUser(ctx context.Context, id string) (user domain.User, err error) {
-	query, args, err := prepareGetUser(id)
+func (r *repository) Get(ctx context.Context, id string) (user domain.User, err error) {
+	query, args, err := prepareGet(id)
 	if err != nil {
 		return user, err
 	}
@@ -35,7 +29,7 @@ func (r *repository) GetUser(ctx context.Context, id string) (user domain.User, 
 	return
 }
 
-func (r *repository) CreateUser(ctx context.Context, user domain.User) (id string, err error) {
+func (r *repository) Create(ctx context.Context, user domain.User) (id string, err error) {
 	query, args, err := prepeareCreate(user)
 	if err != nil {
 		return "", err
@@ -44,7 +38,7 @@ func (r *repository) CreateUser(ctx context.Context, user domain.User) (id strin
 	return id, err
 }
 
-func (r *repository) UpdateUser(ctx context.Context, user domain.User) (err error) {
+func (r *repository) Update(ctx context.Context, user domain.User) (err error) {
 	query, args, err := prepareUpdate(user)
 	if err != nil {
 		return err
@@ -57,7 +51,7 @@ func (r *repository) UpdateUser(ctx context.Context, user domain.User) (err erro
 	return
 }
 
-func (r *repository) DeleteUser(ctx context.Context, id string) (err error) {
+func (r *repository) Delete(ctx context.Context, id string) (err error) {
 	query, args, err := prepareDelete(id)
 	if err != nil {
 		return err

@@ -8,7 +8,7 @@ import (
 
 const TABLE_NAME = "users"
 
-func prepareGetUser(id string) (string, []interface{}, error) {
+func prepareGet(id string) (string, []interface{}, error) {
 	psqlSq := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
 	rawQuery := psqlSq.Select("id", "name", "surname").From(TABLE_NAME).Where("id = ?", id)
 	return rawQuery.ToSql()

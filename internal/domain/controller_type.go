@@ -1,6 +1,6 @@
 package domain
 
-type ControllerTypes struct {
+type ControllerType struct {
 	ID            string `json:"id" form:"id"`
 	Name          string `json:"name" form:"name" binding:"required"`
 	Photo         string `json:"photo" form:"photo"`
