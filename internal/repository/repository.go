@@ -54,6 +54,13 @@ type Devices interface {
 	Delete(ctx context.Context, id string) (err error)
 }
 
+type Pins interface {
+	Get(ctx context.Context, id string) (pin domain.Pin, err error)
+	Create(ctx context.Context, pin domain.Pin) (id string, err error)
+	Update(ctx context.Context, pin domain.Pin) (err error)
+	Delete(ctx context.Context, id string) (err error)
+}
+
 type Repository struct {
 	Users           UsersRepository
 	Controllers     ControllersRepository
@@ -62,4 +69,5 @@ type Repository struct {
 	Houses          Houses
 	DeviceTypes     DeviceTypes
 	Devices         Devices
+	Pins            Pins
 }

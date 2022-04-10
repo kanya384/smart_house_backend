@@ -1,4 +1,4 @@
-package device_types
+package device_type
 
 import (
 	"context"
