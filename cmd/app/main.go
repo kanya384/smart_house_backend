@@ -4,7 +4,7 @@ import (
 	"context"
 	"smart_house_backend/internal/config"
 	"smart_house_backend/internal/domain"
-	repository "smart_house_backend/internal/repositories"
+	repository "smart_house_backend/internal/repository/pg"
 	"smart_house_backend/pkg/helpers/pg"
 	"smart_house_backend/pkg/logger"
 
@@ -47,5 +47,5 @@ func main() {
 	repository := repository.Setup(pool)
 	//id, err := repository.Users.CreateUser(context.Background(), domain.User{ID: pg.CreateID(), Name: "Мулиат", Surname: "Кушу"})
 	//user, err := repository.Users.GetUser(context.Background(), "670f40d2-3c3e-4ce3-9c78-9d924bbd5e89")
-	err = repository.Users.UpdateUser(context.Background(), domain.User{ID: "a7364b9e-2989-4da6-b22c-6d48b77bf4dc_", Name: "Рамазан_", Surname: "Кушу"})
+	err = repository.Users.Update(context.Background(), domain.User{ID: "a7364b9e-2989-4da6-b22c-6d48b77bf4dc_", Name: "Рамазан_", Surname: "Кушу"})
 }

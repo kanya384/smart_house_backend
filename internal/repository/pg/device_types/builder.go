@@ -1,4 +1,4 @@
-package houses
+package device_types
 
 import (
 	"smart_house_backend/internal/domain"
@@ -6,23 +6,23 @@ import (
 	sq "github.com/Masterminds/squirrel"
 )
 
-const TABLE_NAME = "house_parts"
+const TABLE_NAME = "device_types"
 
 func prepareGet(id string) (string, []interface{}, error) {
 	psqlSq := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
-	rawQuery := psqlSq.Select("id", "name", "photo", "digital_pin_cnt", "analog_pin_cnt").From(TABLE_NAME).Where("id = ?", id)
+	rawQuery := psqlSq.Select("id", "name").From(TABLE_NAME).Where("id = ?", id)
 	return rawQuery.ToSql()
 }
 
-func prepeareCreate(house domain.House) (string, []interface{}, error) {
+func prepeareCreate(deviceType domain.DeviceType) (string, []interface{}, error) {
 	psqlSq := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
-	rawQuery := psqlSq.Insert(TABLE_NAME).Columns("id", "name", "owner_id").Values(house.ID, house.Name, house.OwnerID).Suffix("RETURNING \"id\"")
+	rawQuery := psqlSq.Insert(TABLE_NAME).Columns("id", "name").Values(deviceType.ID, deviceType.Name).Suffix("RETURNING \"id\"")
 	return rawQuery.ToSql()
 }
 
-func prepareUpdate(house domain.House) (string, []interface{}, error) {
+func prepareUpdate(deviceType domain.DeviceType) (string, []interface{}, error) {
 	psqlSq := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
-	rawQuery := psqlSq.Update(TABLE_NAME).Set("name", house.Name).Set("owner_id", house.OwnerID).Where("id = ?", house.ID)
+	rawQuery := psqlSq.Update(TABLE_NAME).Set("name", deviceType.Name).Where("id = ?", deviceType.ID)
 	return rawQuery.ToSql()
 }
 

@@ -13,7 +13,7 @@ type repository struct {
 	Db *pgxpool.Pool
 }
 
-func NewRepository(Db *pgxpool.Pool) repo.ControllerTypesRepository {
+func NewRepository(Db *pgxpool.Pool) repo.ControllerTypes {
 	return &repository{
 		Db: Db,
 	}

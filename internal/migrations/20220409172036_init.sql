@@ -53,8 +53,12 @@ CREATE TABLE IF NOT EXISTS Device_types (
 CREATE TABLE IF NOT EXISTS Devices (
     id                 text primary key,
     device_type_id     text not null,
+    house_part_id       text not null,
     CONSTRAINT devices_Constraint
         FOREIGN KEY (device_type_id) REFERENCES Device_types (id)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT house_part_Constraint
+        FOREIGN KEY (house_part_id) REFERENCES House_parts (id)
         ON DELETE CASCADE ON UPDATE CASCADE
 );
 

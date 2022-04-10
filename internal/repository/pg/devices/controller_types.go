@@ -1,4 +1,4 @@
-package houses
+package devices
 
 import (
 	"context"
@@ -13,23 +13,23 @@ type repository struct {
 	Db *pgxpool.Pool
 }
 
-func NewRepository(Db *pgxpool.Pool) repo.Houses {
+func NewRepository(Db *pgxpool.Pool) repo.Devices {
 	return &repository{
 		Db: Db,
 	}
 }
 
-func (r *repository) Get(ctx context.Context, id string) (house domain.House, err error) {
+func (r *repository) Get(ctx context.Context, id string) (device domain.Device, err error) {
 	query, args, err := prepareGet(id)
 	if err != nil {
-		return house, err
+		return
 	}
-	err = r.Db.QueryRow(ctx, query, args...).Scan(&house.ID, &house.Name, &house.OwnerID)
+	err = r.Db.QueryRow(ctx, query, args...).Scan(&device.ID, &device.DeviceTypeId, &device.HousePartId)
 	return
 }
 
-func (r *repository) Create(ctx context.Context, house domain.House) (id string, err error) {
-	query, args, err := prepeareCreate(house)
+func (r *repository) Create(ctx context.Context, device domain.Device) (id string, err error) {
+	query, args, err := prepeareCreate(device)
 	if err != nil {
 		return "", err
 	}
@@ -37,8 +37,8 @@ func (r *repository) Create(ctx context.Context, house domain.House) (id string,
 	return id, err
 }
 
-func (r *repository) Update(ctx context.Context, house domain.House) (err error) {
-	query, args, err := prepareUpdate(house)
+func (r *repository) Update(ctx context.Context, device domain.Device) (err error) {
+	query, args, err := prepareUpdate(device)
 	if err != nil {
 		return err
 	}
