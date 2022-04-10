@@ -30,6 +30,7 @@ func (r *repository) Get(ctx context.Context, id string) (user domain.User, err 
 }
 
 func (r *repository) Create(ctx context.Context, user domain.User) (id string, err error) {
+	fmt.Println(user)
 	query, args, err := prepeareCreate(user)
 	if err != nil {
 		return "", err
@@ -46,7 +47,7 @@ func (r *repository) Update(ctx context.Context, user domain.User) (err error) {
 	rows, err := r.Db.Exec(ctx, query, args...)
 	fmt.Println(rows.RowsAffected())
 	if rows.RowsAffected() == 0 {
-		err = errors.New(domain.NoFiledsUpdated)
+		err = errors.New(domain.ErrNoFiledsUpdated)
 	}
 	return
 }
@@ -58,7 +59,7 @@ func (r *repository) Delete(ctx context.Context, id string) (err error) {
 	}
 	rows, err := r.Db.Exec(ctx, query, args)
 	if rows.RowsAffected() == 0 {
-		err = errors.New(domain.NoFiledsDeleted)
+		err = errors.New(domain.ErrNoFiledsDeleted)
 	}
 	return
 }

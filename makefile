@@ -17,3 +17,7 @@ proto-gen:
 	@protoc --go_out=internal api/grpc/api.proto --go-grpc_opt=require_unimplemented_servers=false --go-grpc_out=internal
 mockgen:
 	@cd internal/repository && mockery --all --recursive=true --output=../../mocks
+test:
+	@go test ./...
+test-verbose:
+	@go test ./... -v

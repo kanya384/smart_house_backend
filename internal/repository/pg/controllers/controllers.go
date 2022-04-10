@@ -45,7 +45,7 @@ func (r *repository) Update(ctx context.Context, controller domain.Controller) (
 	}
 	rows, err := r.Db.Exec(ctx, query, args...)
 	if rows.RowsAffected() == 0 {
-		err = errors.New(domain.NoFiledsUpdated)
+		err = errors.New(domain.ErrNoFiledsUpdated)
 	}
 	return
 }
@@ -57,7 +57,7 @@ func (r *repository) Delete(ctx context.Context, id string) (err error) {
 	}
 	rows, err := r.Db.Exec(ctx, query, args)
 	if rows.RowsAffected() == 0 {
-		err = errors.New(domain.NoFiledsDeleted)
+		err = errors.New(domain.ErrNoFiledsDeleted)
 	}
 	return
 }

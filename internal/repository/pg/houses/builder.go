@@ -6,7 +6,7 @@ import (
 	sq "github.com/Masterminds/squirrel"
 )
 
-const TABLE_NAME = "house_parts"
+const TABLE_NAME = "houses"
 
 func prepareGet(id string) (string, []interface{}, error) {
 	psqlSq := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
