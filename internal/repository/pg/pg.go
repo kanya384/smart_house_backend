@@ -20,7 +20,7 @@ func Setup(pool *pgxpool.Pool) *repo.Repository {
 	return &repo.Repository{
 		Users:           users.NewRepository(pool),
 		Controllers:     controllers.NewRepository(pool),
-		ControllerTypes: controller_types.NewRepository(pool),
+		ControllerTypes: controller_types.NewRepository(pool, PREFIX),
 		HouseParts:      house_part.NewRepository(pool),
 		Houses:          houses.NewRepository(pool),
 		DeviceTypes:     device_type.NewRepository(pool, PREFIX),

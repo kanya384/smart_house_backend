@@ -20,7 +20,7 @@ type ControllersRepository interface {
 }
 
 type ControllerTypes interface {
-	Get(ctx context.Context, id string) (controller domain.Controller, err error)
+	Get(ctx context.Context, id string) (controller domain.ControllerType, err error)
 	Create(ctx context.Context, controllerType domain.ControllerType) (id string, err error)
 	Update(ctx context.Context, controllerType domain.ControllerType) (err error)
 	Delete(ctx context.Context, id string) (err error)

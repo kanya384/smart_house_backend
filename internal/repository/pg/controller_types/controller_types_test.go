@@ -1,4 +1,4 @@
-package device_type_test
+package controller_types_test
 
 import (
 	"context"
@@ -8,7 +8,7 @@ import (
 	"smart_house_backend/internal/config"
 	"smart_house_backend/internal/domain"
 	"smart_house_backend/internal/repository"
-	"smart_house_backend/internal/repository/pg/device_type"
+	"smart_house_backend/internal/repository/pg/controller_types"
 	helpers "smart_house_backend/pkg/helpers/pg"
 
 	"github.com/jackc/pgx/v4/pgxpool"
@@ -18,39 +18,39 @@ import (
 
 const SCHEMA_NAME = "TEST"
 
-func TestRepositoryDeviceTypesTestSuite(t *testing.T) {
-	suite.Run(t, &DeviceTypesTestSuite{})
+func TestRepositoryControllerTypes(t *testing.T) {
+	suite.Run(t, &ControllerTypes{})
 }
 
-type DeviceTypesTestSuite struct {
+type ControllerTypes struct {
 	suite.Suite
 	pool       *pgxpool.Pool
-	repository repository.DeviceTypes
+	repository repository.ControllerTypes
 }
 
-func (s *DeviceTypesTestSuite) SetupSuite() {
+func (s *ControllerTypes) SetupSuite() {
 	err := s.buildRepository()
 	if err != nil {
 		s.FailNow("Failed to create Postgres client: %s", err)
 	}
 }
 
-func (s *DeviceTypesTestSuite) TestGet() {
+func (s *ControllerTypes) TestGet() {
 	ctx := context.Background()
-	deviceType := domain.DeviceType{ID: "4fba07cb-7c5e-4a18-a62f-2e9044a50c1b", Name: "Выключатель", Photo: "https://avselectro.ru/uploads/gallery/44/max/1a2a3ef554d7cd9f32fc6895a6f13d86.jpg"}
+	controllerType := domain.ControllerType{ID: "39248a56-18d7-46c1-bbd9-a8139b6bf1fa", Name: "Orange Pi One", Photo: "https://static.chipdip.ru/lib/736/DOC002736925.jpg", DigitalPinCnt: 11, AnalogPinCnt: 5}
 	cases := map[string]struct {
 		input string
-		want  domain.DeviceType
+		want  domain.ControllerType
 		err   error
 	}{
 		"success": {
-			input: deviceType.ID,
-			want:  deviceType,
+			input: controllerType.ID,
+			want:  controllerType,
 			err:   nil,
 		},
 		"not founded": {
 			input: helpers.CreateID(),
-			want:  domain.DeviceType{},
+			want:  domain.ControllerType{},
 			err:   errors.New(domain.ErrNotFounded),
 		},
 	}
@@ -65,22 +65,22 @@ func (s *DeviceTypesTestSuite) TestGet() {
 
 }
 
-func (s *DeviceTypesTestSuite) TestCreate() {
+func (s *ControllerTypes) TestCreate() {
 	ctx := context.Background()
-	deviceType := domain.DeviceType{ID: helpers.CreateID(), Name: "Выключатель", Photo: "https://avselectro.ru/uploads/gallery/44/max/1a2a3ef554d7cd9f32fc6895a6f13d86.jpg"}
-
+	controllerType := domain.ControllerType{ID: "39248a56-18d7-46c1-bbd9-a8139b6bf1fa", Name: "Orange Pi One", Photo: "https://static.chipdip.ru/lib/736/DOC002736925.jpg", DigitalPinCnt: 11, AnalogPinCnt: 5}
+	newID := helpers.CreateID()
 	cases := map[string]struct {
-		input domain.DeviceType
+		input domain.ControllerType
 		want  string
 		err   error
 	}{
 		"create device success": {
-			input: deviceType,
-			want:  deviceType.ID,
+			input: domain.ControllerType{ID: newID, Name: "Name"},
+			want:  newID,
 			err:   nil,
 		},
 		"duplicate key": {
-			input: deviceType,
+			input: controllerType,
 			want:  "",
 			err:   errors.New(domain.ErrDuplicateKey),
 		},
@@ -95,16 +95,16 @@ func (s *DeviceTypesTestSuite) TestCreate() {
 	}
 }
 
-func (s *DeviceTypesTestSuite) TestUpdate() {
+func (s *ControllerTypes) TestUpdate() {
 	ctx := context.Background()
-	deviceType := domain.DeviceType{ID: "4fba07cb-7c5e-4a18-a62f-2e9044a50c1b", Name: "Выключатель", Photo: "https://avselectro.ru/uploads/gallery/44/max/1a2a3ef554d7cd9f32fc6895a6f13d86.jpg"}
+	controllerType := domain.ControllerType{ID: "39248a56-18d7-46c1-bbd9-a8139b6bf1fa", Name: "Orange Pi One", Photo: "https://static.chipdip.ru/lib/736/DOC002736925.jpg", DigitalPinCnt: 11, AnalogPinCnt: 5}
 
 	cases := map[string]struct {
-		input domain.DeviceType
+		input domain.ControllerType
 		err   error
 	}{
 		"update device success": {
-			input: deviceType,
+			input: controllerType,
 			err:   nil,
 		},
 	}
@@ -117,16 +117,16 @@ func (s *DeviceTypesTestSuite) TestUpdate() {
 	}
 }
 
-func (s *DeviceTypesTestSuite) TestDelete() {
+/*func (s *ControllerTypes) TestDelete() {
 	ctx := context.Background()
-	deviceTypeID := "2e9044a50c1b-7c5e-4a18-a62f-4fba07cb"
+	controllerTypeID := "2e9044a50c1b-7c5e-4a18-a62f-4fba07cb"
 
 	cases := map[string]struct {
 		input string
 		err   error
 	}{
 		"delete device type success": {
-			input: deviceTypeID,
+			input: controllerTypeID,
 			err:   nil,
 		},
 		"no device to delete": {
@@ -141,9 +141,9 @@ func (s *DeviceTypesTestSuite) TestDelete() {
 			s.Equal(err, cs.err)
 		})
 	}
-}
+}*/
 
-func (s *DeviceTypesTestSuite) buildRepository() (err error) {
+func (s *ControllerTypes) buildRepository() (err error) {
 	config, err := config.InitConfig("APP")
 	if err != nil {
 		logrus.Panic("error initializing config: %w", err)
@@ -172,7 +172,7 @@ func (s *DeviceTypesTestSuite) buildRepository() (err error) {
 
 	s.pool = pool
 
-	s.repository = device_type.NewRepository(pool, SCHEMA_NAME)
+	s.repository = controller_types.NewRepository(pool, SCHEMA_NAME)
 
 	return
 }
