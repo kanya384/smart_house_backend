@@ -37,7 +37,7 @@ func (qb *queryBuilder) prepeareCreate(controllerType domain.ControllerType) (st
 
 func (qb *queryBuilder) prepareUpdate(controllerType domain.ControllerType) (string, []interface{}, error) {
 	psqlSq := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
-	rawQuery := psqlSq.Update(qb.getTableName()).Set("name", controllerType.Name).Set("photo", controllerType.Photo).Set("digital_pin_cnt", controllerType.DigitalPinCnt).Set("digital_pin_cnt", controllerType.AnalogPinCnt).Where("id = ?", controllerType.ID)
+	rawQuery := psqlSq.Update(qb.getTableName()).Set("name", controllerType.Name).Set("photo", controllerType.Photo).Set("digital_pin_cnt", controllerType.DigitalPinCnt).Set("analog_pin_cnt", controllerType.AnalogPinCnt).Where("id = ?", controllerType.ID)
 	return rawQuery.ToSql()
 }
 

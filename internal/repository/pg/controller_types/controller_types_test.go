@@ -97,13 +97,13 @@ func (s *ControllerTypes) TestCreate() {
 
 func (s *ControllerTypes) TestUpdate() {
 	ctx := context.Background()
-	controllerType := domain.ControllerType{ID: "39248a56-18d7-46c1-bbd9-a8139b6bf1fa", Name: "Orange Pi One", Photo: "https://static.chipdip.ru/lib/736/DOC002736925.jpg", DigitalPinCnt: 11, AnalogPinCnt: 5}
+	controllerType := domain.ControllerType{ID: "39248a56-18d7-46c1-bbd9-a8139b6bf1fa", Name: "Orange Pi One2", Photo: "https://static.chipdip.ru/lib/736/DOC002736925.jpg", DigitalPinCnt: 11, AnalogPinCnt: 5}
 
 	cases := map[string]struct {
 		input domain.ControllerType
 		err   error
 	}{
-		"update device success": {
+		"update success": {
 			input: controllerType,
 			err:   nil,
 		},
@@ -117,9 +117,9 @@ func (s *ControllerTypes) TestUpdate() {
 	}
 }
 
-/*func (s *ControllerTypes) TestDelete() {
+func (s *ControllerTypes) TestDelete() {
 	ctx := context.Background()
-	controllerTypeID := "2e9044a50c1b-7c5e-4a18-a62f-4fba07cb"
+	controllerTypeID := "a8139b6bf1fa-18d7-46c1-bbd9-39248a56"
 
 	cases := map[string]struct {
 		input string
@@ -141,7 +141,7 @@ func (s *ControllerTypes) TestUpdate() {
 			s.Equal(err, cs.err)
 		})
 	}
-}*/
+}
 
 func (s *ControllerTypes) buildRepository() (err error) {
 	config, err := config.InitConfig("APP")

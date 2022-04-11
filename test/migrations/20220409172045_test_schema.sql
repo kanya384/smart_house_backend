@@ -86,6 +86,7 @@ INSERT INTO TEST.Device_types (id, name, photo) VALUES ('2e9044a50c1b-7c5e-4a18-
 INSERT INTO TEST.Houses (id, name, owner_id) VALUES ('2e345e6d-b3b9-42e8-a3b4-cf147b037d3c', 'house1', '9120f91d-17b9-405a-ae74-797c4c9e0119');
 INSERT INTO TEST.House_parts (id, name, house_id) VALUES ('8120f91d-17b9-405a-ae74-797c4c9e0117', 'house1', '2e345e6d-b3b9-42e8-a3b4-cf147b037d3c');
 INSERT INTO TEST.Controller_types (id, name, photo, digital_pin_cnt, analog_pin_cnt) VALUES ('39248a56-18d7-46c1-bbd9-a8139b6bf1fa', 'Orange Pi One', 'https://static.chipdip.ru/lib/736/DOC002736925.jpg', 11, 5);
+INSERT INTO TEST.Controller_types (id, name, photo, digital_pin_cnt, analog_pin_cnt) VALUES ('a8139b6bf1fa-18d7-46c1-bbd9-39248a56', 'Orange Pi Zero', 'https://static.chipdip.ru/lib/736/DOC002736925.jpg', 11, 5);
 INSERT INTO TEST.Controllers (id, controller_type_id, ip) VALUES ('4523e684-ad41-4fe3-8835-8d200d164a2f', '39248a56-18d7-46c1-bbd9-a8139b6bf1fa', '10.21.0.21');
 INSERT INTO TEST.Devices (id, device_type_id, house_part_id) VALUES ('70d3d531-4041-4d74-8306-bf8e7319b74b', '4fba07cb-7c5e-4a18-a62f-2e9044a50c1b', '8120f91d-17b9-405a-ae74-797c4c9e0117');
 INSERT INTO TEST.Devices (id, device_type_id, house_part_id) VALUES ('81d3d531-4041-4d74-8306-bf8e7319b74b', '4fba07cb-7c5e-4a18-a62f-2e9044a50c1b', '8120f91d-17b9-405a-ae74-797c4c9e0117');

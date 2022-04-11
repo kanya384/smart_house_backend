@@ -56,7 +56,7 @@ func (r *repository) Update(ctx context.Context, controllerType domain.Controlle
 		return err
 	}
 	rows, err := r.Db.Exec(ctx, query, args...)
-	if rows.RowsAffected() == 0 {
+	if err != nil && rows.RowsAffected() == 0 {
 		err = errors.New(domain.ErrNoFiledsUpdated)
 	}
 	return
@@ -67,7 +67,7 @@ func (r *repository) Delete(ctx context.Context, id string) (err error) {
 	if err != nil {
 		return err
 	}
-	rows, err := r.Db.Exec(ctx, query, args)
+	rows, err := r.Db.Exec(ctx, query, args[0])
 	if rows.RowsAffected() == 0 {
 		err = errors.New(domain.ErrNoFiledsDeleted)
 	}
