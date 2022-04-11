@@ -3,7 +3,6 @@ package devices
 import (
 	"context"
 	"errors"
-	"fmt"
 	"smart_house_backend/internal/domain"
 	repo "smart_house_backend/internal/repository"
 	"strings"
@@ -28,8 +27,8 @@ func (r *repository) Get(ctx context.Context, id string) (device domain.Device, 
 	if err != nil {
 		return
 	}
-	r.Db.QueryRow(ctx, query, args...).Scan(&device.ID, &device.DeviceTypeId, &device.HousePartId)
-	if device.ID != id {
+	err = r.Db.QueryRow(ctx, query, args...).Scan(&device.ID, &device.DeviceTypeId, &device.HousePartId)
+	if err != nil && err.Error() == "no rows in result set" {
 		return domain.Device{}, errors.New(domain.ErrNotFounded)
 	}
 	return
@@ -81,7 +80,6 @@ func (r *repository) Delete(ctx context.Context, id string) (err error) {
 		return err
 	}
 	rows, err := r.Db.Exec(ctx, query, args[0])
-	fmt.Println(err)
 	if rows.RowsAffected() == 0 {
 		return errors.New(domain.ErrNoFiledsDeleted)
 	}

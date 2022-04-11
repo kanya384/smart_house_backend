@@ -31,3 +31,5 @@ mockgen:
 	@cd internal/repository && mockery --all --recursive=true --output=../../mocks
 run_tests:
 	@goose -dir=./test/migrations up && go test ./... -v && goose -dir=./test/migrations down
+down_tests:
+	@goose -dir=./test/migrations down

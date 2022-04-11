@@ -1,5 +1,7 @@
 -- +goose Up
 -- +goose StatementBegin
+/* иногда не удаляется */
+DROP SCHEMA IF EXISTS TEST;
 CREATE SCHEMA IF NOT EXISTS TEST;
 
 CREATE TABLE IF NOT EXISTS TEST.Users (
@@ -80,6 +82,7 @@ CREATE TABLE IF NOT EXISTS TEST.Pins (
 
 INSERT INTO TEST.Users(id, name, surname) VALUES('9120f91d-17b9-405a-ae74-797c4c9e0119', 'name', 'surname');
 INSERT INTO TEST.Device_types (id, name, photo) VALUES ('4fba07cb-7c5e-4a18-a62f-2e9044a50c1b', 'Выключатель', 'https://avselectro.ru/uploads/gallery/44/max/1a2a3ef554d7cd9f32fc6895a6f13d86.jpg');
+INSERT INTO TEST.Device_types (id, name, photo) VALUES ('2e9044a50c1b-7c5e-4a18-a62f-4fba07cb', 'Переключатель', 'https://avselectro.ru/uploads/gallery/44/max/1a2a3ef554d7cd9f32fc6895a6f13d86.jpg');
 INSERT INTO TEST.Houses (id, name, owner_id) VALUES ('2e345e6d-b3b9-42e8-a3b4-cf147b037d3c', 'house1', '9120f91d-17b9-405a-ae74-797c4c9e0119');
 INSERT INTO TEST.House_parts (id, name, house_id) VALUES ('8120f91d-17b9-405a-ae74-797c4c9e0117', 'house1', '2e345e6d-b3b9-42e8-a3b4-cf147b037d3c');
 INSERT INTO TEST.Controller_types (id, name, photo, digital_pin_cnt, analog_pin_cnt) VALUES ('39248a56-18d7-46c1-bbd9-a8139b6bf1fa', 'Orange Pi One', 'https://static.chipdip.ru/lib/736/DOC002736925.jpg', 11, 5);

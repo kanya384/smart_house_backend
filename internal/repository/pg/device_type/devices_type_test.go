@@ -1,4 +1,4 @@
-package devices_test
+package device_type_test
 
 import (
 	"context"
@@ -8,7 +8,7 @@ import (
 	"smart_house_backend/internal/config"
 	"smart_house_backend/internal/domain"
 	"smart_house_backend/internal/repository"
-	"smart_house_backend/internal/repository/pg/devices"
+	"smart_house_backend/internal/repository/pg/device_type"
 	helpers "smart_house_backend/pkg/helpers/pg"
 
 	"github.com/jackc/pgx/v4/pgxpool"
@@ -25,7 +25,7 @@ func TestRepositoryDevicesTestSuite(t *testing.T) {
 type DevicesTestSuite struct {
 	suite.Suite
 	pool       *pgxpool.Pool
-	repository repository.Devices
+	repository repository.DeviceTypes
 }
 
 func (s *DevicesTestSuite) SetupSuite() {
@@ -37,21 +37,20 @@ func (s *DevicesTestSuite) SetupSuite() {
 
 func (s *DevicesTestSuite) TestGet() {
 	ctx := context.Background()
-	device := domain.Device{ID: "70d3d531-4041-4d74-8306-bf8e7319b74b", DeviceTypeId: "4fba07cb-7c5e-4a18-a62f-2e9044a50c1b", HousePartId: "8120f91d-17b9-405a-ae74-797c4c9e0117"}
-
+	deviceType := domain.DeviceType{ID: "4fba07cb-7c5e-4a18-a62f-2e9044a50c1b", Name: "Выключатель", Photo: "https://avselectro.ru/uploads/gallery/44/max/1a2a3ef554d7cd9f32fc6895a6f13d86.jpg"}
 	cases := map[string]struct {
 		input string
-		want  domain.Device
+		want  domain.DeviceType
 		err   error
 	}{
 		"success": {
-			input: device.ID,
-			want:  device,
+			input: deviceType.ID,
+			want:  deviceType,
 			err:   nil,
 		},
 		"not founded": {
 			input: helpers.CreateID(),
-			want:  domain.Device{},
+			want:  domain.DeviceType{},
 			err:   errors.New(domain.ErrNotFounded),
 		},
 	}
@@ -68,30 +67,20 @@ func (s *DevicesTestSuite) TestGet() {
 
 func (s *DevicesTestSuite) TestCreate() {
 	ctx := context.Background()
-	device := domain.Device{ID: helpers.CreateID(), DeviceTypeId: "4fba07cb-7c5e-4a18-a62f-2e9044a50c1b", HousePartId: "8120f91d-17b9-405a-ae74-797c4c9e0117"}
+	deviceType := domain.DeviceType{ID: helpers.CreateID(), Name: "Выключатель", Photo: "https://avselectro.ru/uploads/gallery/44/max/1a2a3ef554d7cd9f32fc6895a6f13d86.jpg"}
 
 	cases := map[string]struct {
-		input domain.Device
+		input domain.DeviceType
 		want  string
 		err   error
 	}{
 		"create device success": {
-			input: device,
-			want:  device.ID,
+			input: deviceType,
+			want:  deviceType.ID,
 			err:   nil,
 		},
-		"no device type error": {
-			input: domain.Device{ID: helpers.CreateID(), DeviceTypeId: helpers.CreateID(), HousePartId: device.HousePartId},
-			want:  "",
-			err:   errors.New(domain.ErrNoSuchDeviceType),
-		},
-		"no house part error": {
-			input: domain.Device{ID: helpers.CreateID(), DeviceTypeId: device.DeviceTypeId, HousePartId: helpers.CreateID()},
-			want:  "",
-			err:   errors.New(domain.ErrNoSuchHousePart),
-		},
 		"duplicate key": {
-			input: device,
+			input: deviceType,
 			want:  "",
 			err:   errors.New(domain.ErrDuplicateKey),
 		},
@@ -108,23 +97,15 @@ func (s *DevicesTestSuite) TestCreate() {
 
 func (s *DevicesTestSuite) TestUpdate() {
 	ctx := context.Background()
-	device := domain.Device{ID: "70d3d531-4041-4d74-8306-bf8e7319b74b", DeviceTypeId: "4fba07cb-7c5e-4a18-a62f-2e9044a50c1b", HousePartId: "8120f91d-17b9-405a-ae74-797c4c9e0117"}
+	deviceType := domain.DeviceType{ID: "4fba07cb-7c5e-4a18-a62f-2e9044a50c1b", Name: "Выключатель", Photo: "https://avselectro.ru/uploads/gallery/44/max/1a2a3ef554d7cd9f32fc6895a6f13d86.jpg"}
 
 	cases := map[string]struct {
-		input domain.Device
+		input domain.DeviceType
 		err   error
 	}{
 		"update device success": {
-			input: device,
+			input: deviceType,
 			err:   nil,
-		},
-		"no device type error": {
-			input: domain.Device{ID: device.ID, DeviceTypeId: helpers.CreateID(), HousePartId: device.HousePartId},
-			err:   errors.New(domain.ErrNoSuchDeviceType),
-		},
-		"no house part error": {
-			input: domain.Device{ID: device.ID, DeviceTypeId: device.DeviceTypeId, HousePartId: helpers.CreateID()},
-			err:   errors.New(domain.ErrNoSuchHousePart),
 		},
 	}
 
@@ -138,14 +119,14 @@ func (s *DevicesTestSuite) TestUpdate() {
 
 func (s *DevicesTestSuite) TestDelete() {
 	ctx := context.Background()
-	deviceID := "81d3d531-4041-4d74-8306-bf8e7319b74b"
+	deviceTypeID := "2e9044a50c1b-7c5e-4a18-a62f-4fba07cb"
 
 	cases := map[string]struct {
 		input string
 		err   error
 	}{
-		"delete device success": {
-			input: deviceID,
+		"delete device type success": {
+			input: deviceTypeID,
 			err:   nil,
 		},
 		"no device to delete": {
@@ -191,7 +172,7 @@ func (s *DevicesTestSuite) buildRepository() (err error) {
 
 	s.pool = pool
 
-	s.repository = devices.NewRepository(pool, SCHEMA_NAME)
+	s.repository = device_type.NewRepository(pool, SCHEMA_NAME)
 
 	return
 }
