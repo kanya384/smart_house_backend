@@ -43,6 +43,6 @@ func (qb *queryBuilder) prepareUpdate(device domain.Device) (string, []interface
 
 func (qb *queryBuilder) prepareDelete(id string) (string, []interface{}, error) {
 	psqlSq := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
-	rawQuery := psqlSq.Delete(id).From(qb.getTableName())
+	rawQuery := psqlSq.Delete(qb.getTableName()).Where("id = ?", id)
 	return rawQuery.ToSql()
 }

@@ -3,6 +3,7 @@ package devices_test
 import (
 	"context"
 	"errors"
+	"fmt"
 	"testing"
 
 	"smart_house_backend/internal/config"
@@ -59,8 +60,8 @@ func (s *DevicesTestSuite) TestGet() {
 	for name, cs := range cases {
 		s.Run(name, func() {
 			device, err := s.repository.Get(ctx, cs.input)
-			s.Equal(err, cs.err)
-			s.Equal(device, cs.want)
+			s.Equal(cs.err, err)
+			s.Equal(cs.want, device)
 		})
 	}
 
@@ -102,6 +103,63 @@ func (s *DevicesTestSuite) TestCreate() {
 			id, err := s.repository.Create(ctx, cs.input)
 			s.Equal(err, cs.err)
 			s.Equal(id, cs.want)
+		})
+	}
+}
+
+func (s *DevicesTestSuite) TestUpdate() {
+	ctx := context.Background()
+	device := domain.Device{ID: "70d3d531-4041-4d74-8306-bf8e7319b74b", DeviceTypeId: "4fba07cb-7c5e-4a18-a62f-2e9044a50c1b", HousePartId: "8120f91d-17b9-405a-ae74-797c4c9e0117"}
+
+	cases := map[string]struct {
+		input domain.Device
+		err   error
+	}{
+		"update device success": {
+			input: device,
+			err:   nil,
+		},
+		"no device type error": {
+			input: domain.Device{ID: device.ID, DeviceTypeId: helpers.CreateID(), HousePartId: device.HousePartId},
+			err:   errors.New(domain.ErrNoSuchDeviceType),
+		},
+		"no house part error": {
+			input: domain.Device{ID: device.ID, DeviceTypeId: device.DeviceTypeId, HousePartId: helpers.CreateID()},
+			err:   errors.New(domain.ErrNoSuchHousePart),
+		},
+	}
+
+	for name, cs := range cases {
+		s.Run(name, func() {
+			err := s.repository.Update(ctx, cs.input)
+			s.Equal(cs.err, err)
+		})
+	}
+}
+
+func (s *DevicesTestSuite) TestDelete() {
+	ctx := context.Background()
+	deviceID := "81d3d531-4041-4d74-8306-bf8e7319b74b"
+
+	cases := map[string]struct {
+		input string
+		err   error
+	}{
+		"delete device success": {
+			input: deviceID,
+			err:   nil,
+		},
+		"no device to delete": {
+			input: helpers.CreateID(),
+			err:   errors.New(domain.ErrNoFiledsDeleted),
+		},
+	}
+
+	for name, cs := range cases {
+		s.Run(name, func() {
+			err := s.repository.Delete(ctx, cs.input)
+			fmt.Println(err)
+			s.Equal(err, cs.err)
 		})
 	}
 }

@@ -3,6 +3,7 @@ package devices
 import (
 	"context"
 	"errors"
+	"fmt"
 	"smart_house_backend/internal/domain"
 	repo "smart_house_backend/internal/repository"
 	"strings"
@@ -48,6 +49,7 @@ func (r *repository) Create(ctx context.Context, device domain.Device) (id strin
 			err = errors.New(domain.ErrNoSuchHousePart)
 		case strings.Contains(err.Error(), "duplicate key value violates unique constraint"):
 			err = errors.New(domain.ErrDuplicateKey)
+		default:
 		}
 	}
 	return id, err
@@ -58,17 +60,16 @@ func (r *repository) Update(ctx context.Context, device domain.Device) (err erro
 	if err != nil {
 		return err
 	}
-	rows, err := r.Db.Exec(ctx, query, args...)
+	_, err = r.Db.Exec(ctx, query, args...)
 	if err != nil {
 		switch true {
-		case rows.RowsAffected() == 0:
-			err = errors.New(domain.ErrNoFiledsUpdated)
 		case strings.Contains(err.Error(), "devices_constraint"):
 			err = errors.New(domain.ErrNoSuchDeviceType)
 		case strings.Contains(err.Error(), "house_part_constraint"):
 			err = errors.New(domain.ErrNoSuchHousePart)
 		case strings.Contains(err.Error(), "duplicate key value violates unique constraint"):
 			err = errors.New(domain.ErrDuplicateKey)
+		default:
 		}
 	}
 	return
@@ -79,9 +80,10 @@ func (r *repository) Delete(ctx context.Context, id string) (err error) {
 	if err != nil {
 		return err
 	}
-	rows, err := r.Db.Exec(ctx, query, args)
+	rows, err := r.Db.Exec(ctx, query, args[0])
+	fmt.Println(err)
 	if rows.RowsAffected() == 0 {
-		err = errors.New(domain.ErrNoFiledsDeleted)
+		return errors.New(domain.ErrNoFiledsDeleted)
 	}
 	return
 }
