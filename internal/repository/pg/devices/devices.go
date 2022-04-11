@@ -15,10 +15,10 @@ type repository struct {
 	qb *queryBuilder
 }
 
-func NewRepository(Db *pgxpool.Pool, tableName string) repo.Devices {
+func NewRepository(Db *pgxpool.Pool, prefix string) repo.Devices {
 	return &repository{
 		Db: Db,
-		qb: NewQueryBuilder(tableName),
+		qb: NewQueryBuilder(prefix),
 	}
 }
 

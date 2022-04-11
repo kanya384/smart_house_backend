@@ -8,19 +8,15 @@ import (
 	"smart_house_backend/internal/config"
 	"smart_house_backend/internal/domain"
 	"smart_house_backend/internal/repository"
-	"smart_house_backend/internal/repository/pg/controller_types"
-	"smart_house_backend/internal/repository/pg/controllers"
-	"smart_house_backend/internal/repository/pg/device_type"
 	"smart_house_backend/internal/repository/pg/devices"
-	"smart_house_backend/internal/repository/pg/house_part"
-	"smart_house_backend/internal/repository/pg/houses"
-	"smart_house_backend/internal/repository/pg/pins"
-	"smart_house_backend/internal/repository/pg/users"
 	helpers "smart_house_backend/pkg/helpers/pg"
 
 	"github.com/jackc/pgx/v4/pgxpool"
+	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/suite"
 )
+
+const SCHEMA_NAME = "TEST"
 
 func TestRepositoryDevicesTestSuite(t *testing.T) {
 	suite.Run(t, &DevicesTestSuite{})
@@ -29,7 +25,7 @@ func TestRepositoryDevicesTestSuite(t *testing.T) {
 type DevicesTestSuite struct {
 	suite.Suite
 	pool       *pgxpool.Pool
-	repository *repository.Repository
+	repository repository.Devices
 }
 
 func (s *DevicesTestSuite) SetupSuite() {
@@ -41,8 +37,7 @@ func (s *DevicesTestSuite) SetupSuite() {
 
 func (s *DevicesTestSuite) TestGet() {
 	ctx := context.Background()
-	device, err := s.createNecessaryData(ctx, true)
-	s.Require().NoError(err, "failed to create necessary data")
+	device := domain.Device{ID: "70d3d531-4041-4d74-8306-bf8e7319b74b", DeviceTypeId: "4fba07cb-7c5e-4a18-a62f-2e9044a50c1b", HousePartId: "8120f91d-17b9-405a-ae74-797c4c9e0117"}
 
 	cases := map[string]struct {
 		input string
@@ -63,7 +58,7 @@ func (s *DevicesTestSuite) TestGet() {
 
 	for name, cs := range cases {
 		s.Run(name, func() {
-			device, err := s.repository.Devices.Get(ctx, cs.input)
+			device, err := s.repository.Get(ctx, cs.input)
 			s.Equal(err, cs.err)
 			s.Equal(device, cs.want)
 		})
@@ -73,8 +68,7 @@ func (s *DevicesTestSuite) TestGet() {
 
 func (s *DevicesTestSuite) TestCreate() {
 	ctx := context.Background()
-	device, err := s.createNecessaryData(ctx, false)
-	s.Require().NoError(err, "failed to create necessary data")
+	device := domain.Device{ID: helpers.CreateID(), DeviceTypeId: "4fba07cb-7c5e-4a18-a62f-2e9044a50c1b", HousePartId: "8120f91d-17b9-405a-ae74-797c4c9e0117"}
 
 	cases := map[string]struct {
 		input domain.Device
@@ -105,71 +99,17 @@ func (s *DevicesTestSuite) TestCreate() {
 
 	for name, cs := range cases {
 		s.Run(name, func() {
-			id, err := s.repository.Devices.Create(ctx, cs.input)
+			id, err := s.repository.Create(ctx, cs.input)
 			s.Equal(err, cs.err)
 			s.Equal(id, cs.want)
 		})
 	}
 }
 
-func (s *DevicesTestSuite) createNecessaryData(ctx context.Context, create bool) (domain.Device, error) {
-
-	user := domain.User{
-		ID:      helpers.CreateID(),
-		Name:    "Test Name",
-		Surname: "Test Surname",
-	}
-	_, err := s.repository.Users.Create(ctx, user)
-	s.Require().NoError(err, "Failed to create user")
-
-	house := domain.House{
-		ID:      helpers.CreateID(),
-		Name:    "Test House",
-		OwnerID: user.ID,
-	}
-	_, err = s.repository.Houses.Create(ctx, house)
-	s.Require().NoError(err, "Failed to create house")
-
-	house_part := domain.HousePart{
-		ID:      helpers.CreateID(),
-		Name:    "Test House Part",
-		HouseID: house.ID,
-	}
-	_, err = s.repository.HouseParts.Create(ctx, house_part)
-	s.Require().NoError(err, "Failed to create house part")
-
-	device_type := domain.DeviceType{
-		ID:   helpers.CreateID(),
-		Name: "Test_Type",
-	}
-	_, err = s.repository.DeviceTypes.Create(ctx, device_type)
-	s.Require().NoError(err, "Failed to create device type")
-
-	device := domain.Device{
-		ID:           helpers.CreateID(),
-		DeviceTypeId: device_type.ID,
-		HousePartId:  house_part.ID,
-	}
-
-	if create {
-		_, err = s.repository.Devices.Create(ctx, device)
-		s.Require().NoError(err, "Failed to create entity")
-
-		entity, err := s.repository.Devices.Get(ctx, device.ID)
-		s.Require().NoError(err, "It should load entity without errors")
-		s.Require().Equal(device, entity, "It should return all entity data")
-	}
-	return device, err
-}
-
 func (s *DevicesTestSuite) buildRepository() (err error) {
-	config := config.Config{
-		PostgresHost:            "localhost",
-		PostgresPort:            "5432",
-		PostgresUsername:        "admin",
-		PostgresPass:            "admin",
-		PostgresDbName:          "smart_house",
-		PostgresPoolConnections: 10,
+	config, err := config.InitConfig("APP")
+	if err != nil {
+		logrus.Panic("error initializing config: %w", err)
 	}
 
 	pgConfig := &helpers.Config{
@@ -195,16 +135,7 @@ func (s *DevicesTestSuite) buildRepository() (err error) {
 
 	s.pool = pool
 
-	s.repository = &repository.Repository{
-		Users:           users.NewRepository(pool),
-		Controllers:     controllers.NewRepository(pool),
-		ControllerTypes: controller_types.NewRepository(pool),
-		HouseParts:      house_part.NewRepository(pool),
-		Houses:          houses.NewRepository(pool),
-		DeviceTypes:     device_type.NewRepository(pool),
-		Devices:         devices.NewRepository(pool, repository.DEVICES_TABLE+"_test"),
-		Pins:            pins.NewRepository(pool),
-	}
+	s.repository = devices.NewRepository(pool, SCHEMA_NAME)
 
 	return
 }
